@@ -21,9 +21,9 @@ function multiplyString(base: string, times: number): string {
     return result;
 }
 
-function getEmptyArrayOfString(length: number):string[]{
+function getEmptyArrayOfString(length: number): string[] {
     let str = new Array(length);
-    for(let i = 0; i < length; i++){
+    for (let i = 0; i < length; i++) {
         str[i] = "";
     }
     return str;
@@ -32,7 +32,7 @@ function getEmptyArrayOfString(length: number):string[]{
 function documentEditor(ranges: Range[], newStr: string[]): TextEdit[] {
     let editor: TextEdit[] = [];
     for (let i = 0; i < newStr.length; i++) {
-            editor.push(new TextEdit(ranges[i], newStr[i]));
+        editor.push(new TextEdit(ranges[i], newStr[i]));
     }
     return editor;
 }
@@ -54,15 +54,15 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
     }
 
     //Group format
-    private static groupFormat(document : TextDocument) : string[] {
+    private static groupFormat(document: TextDocument): string[] {
         const lines = new Array(document.lineCount + 1);
-        for (let i = 0; i < document.lineCount; i++){
+        for (let i = 0; i < document.lineCount; i++) {
             lines[i] = document.lineAt(i).text;
         }
         lines[lines.length - 1] = '';
 
         let lastType = Type.Undefined;
-        let bucket : number[] = [];
+        let bucket: number[] = [];
         for (let i = 0; i < lines.length; i++) {
             let line = lines[i].replace(/\s+$/, '');
             const type = RobotFormatProvider.getLineType(line);
@@ -88,7 +88,7 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
         return lines;
     }
 
-    private static identifyBucketColumns(bucket : number[], lines : string[]) : number[] {
+    private static identifyBucketColumns(bucket: number[], lines: string[]): number[] {
         let columns = [];
 
         for (var index of bucket) {
@@ -112,7 +112,7 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
         }
     }
 
-    private static formatLine(line : string, columns : number[]) : string {
+    private static formatLine(line: string, columns: number[]): string {
         let arr = line.split(/\s{2,}/);
 
         for (let i = 0; i < arr.length; i++) {
@@ -124,7 +124,7 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
         return arr.join('    ');
     }
 
-    private static getLineType(line : string) : Type {
+    private static getLineType(line: string): Type {
         let l = line.replace(/\s+$/, "");
         if (/^\S+/.test(l)) {
             if (l.replace(/^\\\s+/, "\\ ").split(/\s{2,}/).length > 1) {
@@ -172,7 +172,7 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
             else if (/^\s*#/.test(line)) {
                 formatCode.push(2);
             }
-            else if(/^\s*:/.test(line)){
+            else if (/^\s*:/.test(line)) {
                 formatCode.push(3)
             }
             else {
@@ -203,13 +203,13 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
             else if (formatCode[i] == 2) {
                 formatted[i] = line;
             }
-            else if(formatCode[i] == 3){
+            else if (formatCode[i] == 3) {
                 let sentences = line.replace(/^\s+/, "").split(/\s{2,}/);
                 formatted[i] = "    ";
-                for(let j = 0; j < sentences.length; j++){
+                for (let j = 0; j < sentences.length; j++) {
                     let sentence = sentences[j];
                     formatted[i] = formatted[i] + sentence
-                    if(j < sentences.length - 1){
+                    if (j < sentences.length - 1) {
                         formatted[i] = formatted[i] + "  ";
                     }
                 }

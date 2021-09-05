@@ -1,11 +1,11 @@
 {
-	"name": "vscode-rf-formatter",
+	"name": "robotframework-formatter",
 	"displayName": "Robot Framework Formatter",
 	"description": "VSCode extension for format Robot Framework files.",
-	"publisher": "tumit",
+	"publisher": "Polyms",
 	"license": "MIT",
-	"icon": "icon.png",
-	"version": "0.0.1",
+	"icon": "favicon.png",
+	"version": "1.0.5",
 	"engines": {
 		"vscode": "^1.39.0"
 	},
@@ -13,33 +13,35 @@
 		"Formatters"
 	],
 	"activationEvents": [
-		"onLanguage:robot"
+		"onLanguage:robotframework"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"languages": [
 			{
-				"id": "robot",
+				"id": "robotframework",
 				"aliases": [
-					"Robot"
+					"Robot Framework"
 				],
 				"extensions": [
-					"robot"
+					"robot",
+					"resource"
 				]
 			}
 		]
 	},
 	"scripts": {
+		"build": "vsce package",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js"
 	},
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/tumit/vscode-rf-formatter"
-    },
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tumit/vscode-rf-formatter"
+	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.6",
