@@ -7,7 +7,7 @@
 	"icon": "favicon.png",
 	"version": "1.0.6",
 	"engines": {
-		"vscode": "^1.39.0"
+		"vscode": "^1.60.0"
 	},
 	"categories": [
 		"Formatters"
