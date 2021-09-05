@@ -4,5 +4,4 @@
 
 
 ## Credits
-- nayanda1 - https://github.com/KMK-ONLINE/vscode-robotExtension
-- tuanchauict - https://github.com/KMK-ONLINE/vscode-robotExtension/pull/6
+- https://github.com/tumit/vscode-rf-formatter

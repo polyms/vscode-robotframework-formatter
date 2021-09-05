@@ -8,7 +8,7 @@ enum Type {
     Name,
     Comment,
     Empty,
-    For,
+    Block,
     Keyword,
     Undefined
 }
@@ -55,18 +55,19 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
 
     //Group format
     private static groupFormat(document: TextDocument): string[] {
-        const lines = new Array(document.lineCount + 1);
+        const lines = new Array<string>(document.lineCount + 1);
+        const lineTypes = new Array<Type>(document.lineCount + 1);
         for (let i = 0; i < document.lineCount; i++) {
             lines[i] = document.lineAt(i).text;
+            lineTypes[i] = RobotFormatProvider.getLineType(lines[i]);
         }
         lines[lines.length - 1] = '';
 
-        let lastType = Type.Undefined;
         let bucket: number[] = [];
         for (let i = 0; i < lines.length; i++) {
-            let line = lines[i].replace(/\s+$/, '');
-            const type = RobotFormatProvider.getLineType(line);
-            if (type == Type.Name || type == Type.Empty || type == Type.For) {
+            let line = lines[i].trimRight();
+            const type = lineTypes[i];
+            if (type == Type.Name || type == Type.Empty || type == Type.Block || /^\s+END/.test(line)) {
                 if (bucket.length > 0) {
                     const columns = RobotFormatProvider.identifyBucketColumns(bucket, lines);
                     RobotFormatProvider.formatBucket(bucket, columns, lines);
@@ -79,8 +80,26 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
             } else {
                 bucket.push(i);
             }
-            if (type != Type.Comment) {
-                lastType = type;
+        }
+
+        let indentLevel = 1;
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i] as string;
+            if (/^\s*(END)/.test(line)) {
+                indentLevel -= 1;
+            }
+            if (indentLevel > 1) {
+                if (/^\s+(ELSE)/.test(line)) {
+                    lines[i] = new Array((indentLevel - 1) * 4).fill(' ').join('') + line.trim();
+                    if (/^\s+ELSE\sIF/.test(line)) {
+                        lines[i] = lines[i].replace('ELSE IF', 'ELSE IF    ');
+                    }
+                } else {
+                    lines[i] = new Array(indentLevel * 4).fill(' ').join('') + line.trim();
+                }
+            }
+            if (lineTypes[i] == Type.Block) {
+                indentLevel += 1;
             }
         }
 
@@ -103,6 +122,12 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
                     : columns[i];
             }
         }
+
+        if (lines[bucket[0]].trim().split(/\s{2,}/).length == 1 &&
+            bucket.slice(1).every(inx => /^\s*\.\.\./.test(lines[inx]))) {
+            columns[1] = 3;
+        }
+
         return columns;
     }
 
@@ -139,8 +164,8 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
         if (/^\s*#/.test(l)) {
             return Type.Comment;
         }
-        if (/^\s*:/.test(l)) {
-            return Type.For;
+        if (/^\s*(FOR|IF)/.test(l)) {
+            return Type.Block;
         }
         // if (/^\s+\[.*?\]/.test(l)) {     return Type.Keyword; }
         return Type.Body;
