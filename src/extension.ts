@@ -5,11 +5,13 @@ import { RobotFormatProvider } from './provider/format-provider/RobotFormatProvi
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-	vscode.languages.registerDocumentFormattingEditProvider(
-		'robotframework', new RobotFormatProvider()
-	);
+export function activate(
+  // context: vscode.ExtensionContext
+) {
+  vscode.languages.registerDocumentFormattingEditProvider(
+    'robotframework', new RobotFormatProvider(),
+  );
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

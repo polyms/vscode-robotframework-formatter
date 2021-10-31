@@ -8,3 +8,8 @@ vsc-extension-quickstart.md
 **/tslint.json
 **/*.map
 **/*.ts
+.yarn/**
+.yarn*
+.pnp.cjs
+.eslint*
+yarn-error.log
