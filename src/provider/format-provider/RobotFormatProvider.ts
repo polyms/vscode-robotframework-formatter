@@ -71,7 +71,7 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
 
     let bucket: number[] = [];
     for (let i = 0; i < lines.length; i += 1) {
-      const line = lines[i].trimRight();
+      const line = lines[i];
       const type = lineTypes[i];
       if (
         type == Type.Name
@@ -114,6 +114,13 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
       }
       if (lineTypes[i] == Type.Block) {
         indentLevel += 1;
+      }
+
+      lines[i] = lines[i].trimRight();
+
+      if (i > 2 && lines[i].startsWith('***')) {
+        if (lines[i - 1] !== '') lines[i] = '\n\n' + lines[i];
+        else if (lines[i - 2] !== '') lines[i] = '\n' + lines[i];
       }
     }
 
@@ -159,7 +166,7 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
   }
 
   private static formatLine(line: string, columns: number[]): string {
-    const arr = line.trimRight().split(/\s{2,}/);
+    const arr = line.split(/\s{2,}/);
 
     for (let i = 0; i < arr.length; i += 1) {
       arr[i] += (i == arr.length - 1
@@ -262,8 +269,6 @@ export class RobotFormatProvider implements DocumentFormattingEditProvider {
           }
         }
       }
-
-      formatted[i] = formatted[i].trim();
     }
     return formatted;
   }
