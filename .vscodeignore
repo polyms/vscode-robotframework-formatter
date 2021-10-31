@@ -10,6 +10,6 @@ vsc-extension-quickstart.md
 **/*.ts
 .yarn/**
 .yarn*
-.pnp.cjs
+.pnp.*
 .eslint*
 yarn-error.log
